@@ -6,7 +6,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;import sun.java2d.DefaultDisposerRecord;
 import javafx.scene.layout.GridPane;
-
+import javax.swing.JOptionPane;
 
 
 public class FourInARowController {
@@ -103,7 +103,7 @@ public class FourInARowController {
 
 	private void handleInsertButtonEvent(ActionEvent event) {
 		
-		int resultOfInsert;
+		boolean resultOfInsert;
 		Button clickedBtn = (Button)event.getSource();
 		System.out.println();
 		
@@ -111,15 +111,17 @@ public class FourInARowController {
 
 		insertNewDisk(selectedColumToInsert - 1);
 		
-		// call to the logic method to enter the new disk in the logic class
-		// return the status that will continue
-		// 4 - WIN , 2-3 continue, 1 found single, 0 - ended  
-		
-		gameLogic.addDiskToBoard( selectedColumToInsert - 1); 
-		
-		//Send POPUP message on WINNER.
+		resultOfInsert = gameLogic.addDiskToBoard( selectedColumToInsert - 1); 
 		
 		
+		
+		// Found a win!
+		if (resultOfInsert) {
+			handleWin();
+		}
+		else
+			colorOfCircle = !colorOfCircle;
+	
 	}
 	
 	
@@ -149,7 +151,18 @@ public class FourInARowController {
 		
 		board[ rowToInsert][currColumn].getChildren().add(newDisk);
 			
-		colorOfCircle = !colorOfCircle;
 	}
-
+	
+	
+	private void handleWin() {
+		
+		String winner = "";
+		
+		if( colorOfCircle ) 
+			winner = "Player 1";
+		else
+			winner = "Player 2";
+		
+		JOptionPane.showMessageDialog(null, (winner + " has won the game!"), "4 In a Row", 1);
+	}
 }
