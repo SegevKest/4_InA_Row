@@ -7,7 +7,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;import sun.java2d.DefaultDisposerRecord;
 import javafx.scene.layout.GridPane;
 
-
+// The class will represent the Game board
+// It contains all methods and properties of the game, the players and the buttons 
+// Thru interacting with the UI the user will be able to play the game.
 public class FourInARowController {
 
     private final double DISKRADIUS = 20, DISKXCOORD = 29, DISKYCOORD = 25;
@@ -27,6 +29,8 @@ public class FourInARowController {
     private int selectedColumToInsert;
     private boolean colorOfCircle;		// If true - will be red, false - yellow
     
+    
+    // Initialize method - intialize the  buttons, the grid and logic part and set the first turn
     public void initialize() {
 	
     	initButtons();
@@ -42,6 +46,8 @@ public class FourInARowController {
     }
 
     
+    // the method will be invoked after clicking on the clear button.
+    // release all insert buttons that were disable after the win announced
     @FXML
     void clearGame(ActionEvent event) {
 
@@ -65,6 +71,7 @@ public class FourInARowController {
     }
     
     
+    // the method will initialize the buttons for each column and will add the function that will invoke on every click
     private void initButtons() {
     	
     	btnsArrayGrid = new Button[COLUMNS];
@@ -77,6 +84,7 @@ public class FourInARowController {
     		
     		btnsArrayGrid[i].setOnAction(new EventHandler<ActionEvent>() {
 				
+    			// the handleInsertButtonEvent will return true if there was a win- false if not.
 				@Override
 				public void handle(ActionEvent event) {
 					boolean resultOfGame = handleInsertButtonEvent(event);
@@ -84,12 +92,12 @@ public class FourInARowController {
 					if (resultOfGame) 
 						handleWin(); 
 				}
-
 			});
     	}
     }
     
     
+    // the method will initialize the grid - adding the Pane to every cell + adding its border
     private void initGrid() {
     	
     	board = new Pane[ROWS][COLUMNS];
@@ -106,12 +114,11 @@ public class FourInARowController {
     	}
     }
     
-
+    // the handle of each button - when we initialize the buttons array
 	private boolean handleInsertButtonEvent(ActionEvent event) {
 		
 		boolean resultOfInsert;
 		Button clickedBtn = (Button)event.getSource();
-		System.out.println();
 		
 		selectedColumToInsert = Integer.parseInt(clickedBtn.getText());
 
@@ -122,10 +129,9 @@ public class FourInARowController {
 		colorOfCircle = !colorOfCircle;
 			
 		return resultOfInsert;
-	
 	}
 	
-	
+	// The method will get the next row to insert the disk to
 	private int getNextRowToInsertDisk(int currColumn) {
 		
 		int i=ROWS-1;
@@ -138,7 +144,8 @@ public class FourInARowController {
 	}
 	
 	
-	// The method will insert the new Disk (Circle object) with its color to the selected column. Also will modify the color itself for next turn 
+	// The method will insert the new Disk (Circle object) with its color to the selected column. 
+	// Also will modify the color itself for next turn  
 	private void insertNewDisk(int currColumn, Button clickedBtn) {
 	
 		Circle newDisk = new Circle(DISKXCOORD, DISKYCOORD, DISKRADIUS);
@@ -152,12 +159,13 @@ public class FourInARowController {
 			
 		board[ rowToInsert][currColumn].getChildren().add(newDisk);
 			
+		// if the column is full - disable this button
 		if (rowToInsert == 0)
 			clickedBtn.setDisable(true);
-			
 	}
 	
 	
+	// The method handles the winning scenario. it output to console a message and disabling all buttons
 	private void handleWin() {
 		
 		String winner = "";
