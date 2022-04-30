@@ -20,8 +20,11 @@ public class FourInARowController {
     @FXML
     private GridPane gameBoard;
 
-    
+    private final double DISKRADIUS = 20, DISKXCOORD = 29, DISKYCOORD = 25;
     private final int COLUMNS = 7, ROWS = 6;
+    
+    
+    private FourInRowLogic gameLogic;
     
     private Button[] btnsArrayGrid;
     private Pane[][] board;
@@ -31,24 +34,30 @@ public class FourInARowController {
     
     public void initialize() {
 	
-    	colorOfCircle = true;
+    	
     	
     	initButtons();
     	
     	initGrid();
     	
+    	gameLogic = new FourInRowLogic();
+    	
+    	// Set the first player to play
+    	colorOfCircle = true;
     }
 
     
     @FXML
     void clearGame(ActionEvent event) {
 
+    	gameLogic.restartGame();
     	
-    	for (int i=0; i<ROWS; i++) {
+    	for (int i=ROWS - 1; i>0; i--) {
     		for (int j =0; j<COLUMNS; j++) {
-    			board[i][j] = null;
     			
-
+    			if (board[i][j].getChildren().size()>0)	{
+    				board[i][j].getChildren().remove(0);
+    			}
     		}
     	}
     	
@@ -71,7 +80,6 @@ public class FourInARowController {
 				@Override
 				public void handle(ActionEvent event) {
 					handleInsertButtonEvent(event);
-					
 				}
 
 			});
@@ -112,6 +120,7 @@ public class FourInARowController {
 		
 		//Send POPUP message on WINNER.
 		
+		
 	}
 	
 	
@@ -128,13 +137,9 @@ public class FourInARowController {
 	
 	
 	private void insertNewDisk(int currColumn) {
+	
+		Circle newDisk = new Circle(DISKXCOORD, DISKYCOORD, DISKRADIUS);
 		
-		//double newDiskRadius = ( gameBoard.getPrefWidth() / COLUMNS);
-		double newDiskRadius = (20);
-
-		Circle newDisk = new Circle(29, 25, newDiskRadius);
-		
-		System.out.println(newDisk.getCenterX()+" ; "+newDisk.getCenterY());
 		int rowToInsert = getNextRowToInsertDisk(currColumn);
 		
 		if( colorOfCircle ) 
@@ -143,9 +148,7 @@ public class FourInARowController {
 			newDisk.setFill(Color.YELLOW);
 		
 		board[ rowToInsert][currColumn].getChildren().add(newDisk);
-		
-		System.out.println(board[ rowToInsert][currColumn].getPrefHeight()+" - " +board[ rowToInsert][currColumn].getPrefWidth());
-		
+				
 		colorOfCircle = !colorOfCircle;
 		
 	}
