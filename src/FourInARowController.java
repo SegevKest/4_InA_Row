@@ -111,13 +111,11 @@ public class FourInARowController {
 
 		insertNewDisk(selectedColumToInsert - 1);
 		
-		
-		
 		// call to the logic method to enter the new disk in the logic class
 		// return the status that will continue
 		// 4 - WIN , 2-3 continue, 1 found single, 0 - ended  
 		
-		resultOfInsert = gameLogic.addDiskToBoard( selectedColumToInsert - 1); 
+		gameLogic.addDiskToBoard( selectedColumToInsert - 1); 
 		
 		//Send POPUP message on WINNER.
 		

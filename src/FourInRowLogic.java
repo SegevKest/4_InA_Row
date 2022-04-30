@@ -17,52 +17,141 @@ public class FourInRowLogic {
 	public FourInRowLogic() {
 		
 		boardOfGame = new char[ROWS][COLUMNS];
-		countStrike = 0;
+		countStrike = 1;
 		currTurn = true;
 	}
 	
-	public boolean foundWin() {
-	
+	public boolean foundWin( int colToCheck, int rowToCheck, char playerToCheckStrike) {
 		
-		return true;
+		String directionCheck = checkStrikeDirection(colToCheck, rowToCheck, playerToCheckStrike);
+		
+		if (directionCheck!=null) {
+			return checkWin(colToCheck, rowToCheck, playerToCheckStrike, directionCheck);
+		}
+		else
+			return false;
 	}
 	
+	public String checkStrikeDirection(int colToCheck, int rowToCheck, char playerToCheckStrike) {
+		
+		String stepToReturn = null;
+		
+		if ( (colToCheck - 1 >= 0) && boardOfGame[rowToCheck ][colToCheck - 1] == playerToCheckStrike)	{
+			stepToReturn = "LR"; 	// Left Row - continue check to left in the row (j-1) 
+		}
+		else if ( (colToCheck - 1 >= 0 && rowToCheck + 1 < ROWS) && boardOfGame[rowToCheck + 1 ][colToCheck - 1] == playerToCheckStrike)	{
+			stepToReturn = "LD";  	// Left Diagonal - continue check to left in diagonal (i+1)(j-1)
+		}
+		else if ( (rowToCheck + 1 < ROWS) && boardOfGame[rowToCheck + 1 ][colToCheck] == playerToCheckStrike)	{
+			stepToReturn = "C";  	// Column - continue check in the column (i+1)(j)
+		}
+		else if ( (colToCheck + 1 < COLUMNS && rowToCheck + 1 < ROWS) && boardOfGame[rowToCheck + 1 ][colToCheck + 1] == playerToCheckStrike)	{
+			stepToReturn = "RD";  	// Right Diagonal - continue check to Right in diagonal (i+1)(j+1)
+		}
+		else if ( (colToCheck + 1 < COLUMNS ) && boardOfGame[rowToCheck ][colToCheck + 1] == playerToCheckStrike)	{
+			stepToReturn = "RR";  	// Right Row  - continue check to Right in row (i)(j+1)
+		}
+		
+		return stepToReturn;
+	}
 	
-	public boolean checkWin(int stepToCheck, char playerToCheckStrike) {
+	public boolean checkWin(int colToCheck, int rowToCheck, char playerToCheckStrike, String direction) {
 	
 		
-		if (countStrike == 4 )
+		if (countStrike == 4 )	{
+			System.out.println("Done!!!");
 			return true;
+		}
 		else {
 			
-			if(countStrike > 0) {
+			if (boardOfGame[rowToCheck ][colToCheck] == playerToCheckStrike)
+			{
+				countStrike++;
 				
+				switch(direction){
+					
+				case ("LR"):{
+					colToCheck = colToCheck - 1;
+					break;
+					}
+				case ("LD"):{
+					colToCheck = colToCheck - 1;
+					rowToCheck = rowToCheck + 1;
+					break;
+					}
+				case ("C"):{
+					rowToCheck = rowToCheck + 1;
+					break;
+					}
+				case ("RD"):{
+					colToCheck = colToCheck + 1;
+					rowToCheck = rowToCheck + 1;
+					break;
+					}
+				case ("RR"):{
+					colToCheck = colToCheck + 1;
+					break;
+					}
+				}
+				
+				return checkWin(colToCheck, rowToCheck, playerToCheckStrike, direction);
 			}
+			else
+				return false;
 		}
-			
-		return false;
+		
 	}
 	
 	
+	public boolean areFourConnected(char playerToCheckStrike ) {
+		
+		// Vertical check
+		for( int i =0; i<ROWS;i++) {
+			for (int j =0; j<COLUMNS - 3; j++) {
+				if ( boardOfGame[i][j] == playerToCheckStrike && boardOfGame[i][j+1] == playerToCheckStrike  && boardOfGame[i][j+2] == playerToCheckStrike  && boardOfGame[i][j+3] == playerToCheckStrike)
+					return true;
+			}
+		}
+		
+		// Horizontal check
+		for( int i =0; i<ROWS - 3;i++) {
+			for (int j =0; j<COLUMNS; j++) {
+				if ( boardOfGame[i][j] == playerToCheckStrike && boardOfGame[i+1][j] == playerToCheckStrike  && boardOfGame[i+2][j] == playerToCheckStrike  && boardOfGame[i+3][j] == playerToCheckStrike)
+					return true;
+			}
+		}
+		
+		
+		
+		return false;
+	}
 
-	public int addDiskToBoard(int columnToInsert) {
+	public void addDiskToBoard(int columnToInsert) {
 		
 		int rowToInsertDisk = getNextRowToInsertDisk(columnToInsert);
+		boolean foundWin;
 		
-		if (currTurn)	//Player A
+		
+		if (currTurn)	{
+			//Player A	
 			boardOfGame[rowToInsertDisk][columnToInsert] = 'A';
-		else
+//			foundWin = foundWin(columnToInsert, rowToInsertDisk, 'A');
+		}
+		else	{
 			boardOfGame[rowToInsertDisk][columnToInsert] = 'B';
-		
-		
+//			foundWin = foundWin(columnToInsert, rowToInsertDisk, 'B');	
+		}
 		
 		printMatrix();
 		
+		if (currTurn)
+			foundWin = areFourConnected('A');
+		else
+			foundWin = areFourConnected('B');
+		
+		System.out.println(foundWin);
 		
 		currTurn = !currTurn;
-				
-		
-		return 0;
 		
 	}
 	
@@ -75,17 +164,24 @@ public class FourInRowLogic {
 				boardOfGame[i][j] = 0;
 			}
 		}
+		currTurn = true;
 	}
 	
 	// Method to find the next row to insert the disk to
 	private int getNextRowToInsertDisk(int currColumn) {
 		
-		System.out.println(currColumn);
-		int i=ROWS-1;
+		/*
+		 * int i= ROWS - 1;
+		 * 
+		 * while( boardOfGame[i][currColumn] != 0) { i--; }
+		 */
+		
+		int i= 0;
 		
 		while( boardOfGame[i][currColumn] != 0) {
-			i--;
+			i++;
 		}
+
 
 		return i;
 	}
