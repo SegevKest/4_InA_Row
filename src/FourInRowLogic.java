@@ -1,8 +1,6 @@
 
 public class FourInRowLogic {
 
-	
-	
 	// The matrix will be char type - player A - player B.
 	// We will check if the there is a strike with those letters.
 	private char[][] boardOfGame;	

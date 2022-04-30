@@ -6,24 +6,19 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;import sun.java2d.DefaultDisposerRecord;
 import javafx.scene.layout.GridPane;
-import javax.swing.JOptionPane;
 
 
 public class FourInARowController {
 
-    @FXML
-    private GridPane btnsGrid;
-
-    @FXML
-    private Button clearBtn;
-
-    @FXML
-    private GridPane gameBoard;
-
     private final double DISKRADIUS = 20, DISKXCOORD = 29, DISKYCOORD = 25;
     private final int COLUMNS = 7, ROWS = 6;
     
-    
+    @FXML private GridPane btnsGrid;
+
+    @FXML private Button clearBtn;
+
+    @FXML private GridPane gameBoard;
+        
     private FourInRowLogic gameLogic;
     
     private Button[] btnsArrayGrid;
@@ -42,6 +37,8 @@ public class FourInARowController {
     	
     	// Set the first player to play
     	colorOfCircle = true;
+    	
+    	System.out.println("\nPlayer 1 starts the game ");
     }
 
     
@@ -58,9 +55,13 @@ public class FourInARowController {
     		}
     	} 
     	
-    	
     	for (int i = 0; i<COLUMNS; i++)
     		btnsArrayGrid[i].setDisable(false);
+    	
+		if( colorOfCircle ) 
+			System.out.println("\nPlayer 1 starts the game ");
+		else
+			System.out.println("\nPlayer 2 starts the game ");
     }
     
     
@@ -98,9 +99,8 @@ public class FourInARowController {
     			
     			board[i][j] = new Pane();
     			board[i][j].setStyle("-fx-border-color: black");
-    			//board[i][j].setBorder(new Border(new BorderStroke(Color.BLACK, 
-    					//BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
     			board[i][j].setPrefSize((gameBoard.getPrefWidth() / COLUMNS), (gameBoard.getPrefWidth() / ROWS));
+    		
     			gameBoard.add(board[i][j], j, i);
     		}
     	}
@@ -119,11 +119,6 @@ public class FourInARowController {
 		
 		resultOfInsert = gameLogic.addDiskToBoard( selectedColumToInsert - 1); 
 		
-		
-		// Found a win!
-		/*
-		 * if (resultOfInsert) { handleWin(); } else
-		 */
 		colorOfCircle = !colorOfCircle;
 			
 		return resultOfInsert;
@@ -159,7 +154,6 @@ public class FourInARowController {
 			
 		if (rowToInsert == 0)
 			clickedBtn.setDisable(true);
-		
 			
 	}
 	
@@ -173,7 +167,9 @@ public class FourInARowController {
 		else
 			winner = "Player 2";
 		
-		System.out.println(winner + " has won the game!");
-		//JOptionPane.showMessageDialog(null, (winner + " has won the game!"), "4 In a Row", 1);
+		System.out.println(winner + " has won the game! \nYou can clear to board to start a new game!");
+	
+    	for (int i = 0; i<COLUMNS; i++)
+    		btnsArrayGrid[i].setDisable(true);
 	}
 }
