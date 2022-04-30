@@ -56,14 +56,17 @@ public class FourInARowController {
     			if (board[i][j].getChildren().size()>0)	
     				board[i][j].getChildren().remove(0);
     		}
-    	} 	
+    	} 
+    	
+    	
+    	for (int i = 0; i<COLUMNS; i++)
+    		btnsArrayGrid[i].setDisable(false);
     }
     
     
     private void initButtons() {
     	
     	btnsArrayGrid = new Button[COLUMNS];
-    	
     	// Add the first row of the buttons + their text
     	for (int i = 0; i< COLUMNS; i++) {
     		
@@ -75,7 +78,10 @@ public class FourInARowController {
 				
 				@Override
 				public void handle(ActionEvent event) {
-					handleInsertButtonEvent(event);
+					boolean resultOfGame = handleInsertButtonEvent(event);
+					
+					if (resultOfGame) 
+						handleWin(); 
 				}
 
 			});
@@ -101,7 +107,7 @@ public class FourInARowController {
     }
     
 
-	private void handleInsertButtonEvent(ActionEvent event) {
+	private boolean handleInsertButtonEvent(ActionEvent event) {
 		
 		boolean resultOfInsert;
 		Button clickedBtn = (Button)event.getSource();
@@ -109,18 +115,18 @@ public class FourInARowController {
 		
 		selectedColumToInsert = Integer.parseInt(clickedBtn.getText());
 
-		insertNewDisk(selectedColumToInsert - 1);
+		insertNewDisk(selectedColumToInsert - 1 , clickedBtn);
 		
 		resultOfInsert = gameLogic.addDiskToBoard( selectedColumToInsert - 1); 
 		
 		
-		
 		// Found a win!
-		if (resultOfInsert) {
-			handleWin();
-		}
-		else
-			colorOfCircle = !colorOfCircle;
+		/*
+		 * if (resultOfInsert) { handleWin(); } else
+		 */
+		colorOfCircle = !colorOfCircle;
+			
+		return resultOfInsert;
 	
 	}
 	
@@ -138,7 +144,7 @@ public class FourInARowController {
 	
 	
 	// The method will insert the new Disk (Circle object) with its color to the selected column. Also will modify the color itself for next turn 
-	private void insertNewDisk(int currColumn) {
+	private void insertNewDisk(int currColumn, Button clickedBtn) {
 	
 		Circle newDisk = new Circle(DISKXCOORD, DISKYCOORD, DISKRADIUS);
 		
@@ -148,8 +154,12 @@ public class FourInARowController {
 			newDisk.setFill(Color.RED);
 		else
 			newDisk.setFill(Color.YELLOW);
-		
+			
 		board[ rowToInsert][currColumn].getChildren().add(newDisk);
+			
+		if (rowToInsert == 0)
+			clickedBtn.setDisable(true);
+		
 			
 	}
 	
@@ -158,11 +168,12 @@ public class FourInARowController {
 		
 		String winner = "";
 		
-		if( colorOfCircle ) 
+		if( !colorOfCircle ) 
 			winner = "Player 1";
 		else
 			winner = "Player 2";
 		
-		JOptionPane.showMessageDialog(null, (winner + " has won the game!"), "4 In a Row", 1);
+		System.out.println(winner + " has won the game!");
+		//JOptionPane.showMessageDialog(null, (winner + " has won the game!"), "4 In a Row", 1);
 	}
 }
