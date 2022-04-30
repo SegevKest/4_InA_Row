@@ -50,7 +50,7 @@ public class FourInARowController {
 
     	gameLogic.restartGame();
     	
-    	for (int i=ROWS - 1; i>0; i--) {
+    	for (int i= ROWS - 1; i>=0; i--) {
     		for (int j =0; j<COLUMNS; j++) {
     			
     			if (board[i][j].getChildren().size()>0)	
@@ -103,6 +103,7 @@ public class FourInARowController {
 
 	private void handleInsertButtonEvent(ActionEvent event) {
 		
+		int resultOfInsert;
 		Button clickedBtn = (Button)event.getSource();
 		System.out.println();
 		
@@ -110,9 +111,13 @@ public class FourInARowController {
 
 		insertNewDisk(selectedColumToInsert - 1);
 		
+		
+		
 		// call to the logic method to enter the new disk in the logic class
 		// return the status that will continue
 		// 4 - WIN , 2-3 continue, 1 found single, 0 - ended  
+		
+		resultOfInsert = gameLogic.addDiskToBoard( selectedColumToInsert - 1); 
 		
 		//Send POPUP message on WINNER.
 		
@@ -145,9 +150,8 @@ public class FourInARowController {
 			newDisk.setFill(Color.YELLOW);
 		
 		board[ rowToInsert][currColumn].getChildren().add(newDisk);
-				
+			
 		colorOfCircle = !colorOfCircle;
-		
 	}
 
 }
