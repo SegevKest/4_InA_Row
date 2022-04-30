@@ -34,8 +34,6 @@ public class FourInARowController {
     
     public void initialize() {
 	
-    	
-    	
     	initButtons();
     	
     	initGrid();
@@ -55,12 +53,10 @@ public class FourInARowController {
     	for (int i=ROWS - 1; i>0; i--) {
     		for (int j =0; j<COLUMNS; j++) {
     			
-    			if (board[i][j].getChildren().size()>0)	{
+    			if (board[i][j].getChildren().size()>0)	
     				board[i][j].getChildren().remove(0);
-    			}
     		}
-    	}
-    	
+    	} 	
     }
     
     
@@ -136,6 +132,7 @@ public class FourInARowController {
 	}
 	
 	
+	// The method will insert the new Disk (Circle object) with its color to the selected column. Also will modify the color itself for next turn 
 	private void insertNewDisk(int currColumn) {
 	
 		Circle newDisk = new Circle(DISKXCOORD, DISKYCOORD, DISKRADIUS);
